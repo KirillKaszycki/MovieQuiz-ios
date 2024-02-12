@@ -9,5 +9,6 @@ import Foundation
 
 
 protocol QuestionFactoryProtocol {
-    func requestNextQuestion() -> QuizQuestion?
+    var delegate: QuestionFactoryDelegate? {get set}
+    func requestNextQuestion()
 }
