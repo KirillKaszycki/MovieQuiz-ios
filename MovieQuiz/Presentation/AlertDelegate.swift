@@ -6,3 +6,10 @@
 //
 
 import Foundation
+import UIKit
+
+
+// Делегат для алертов
+protocol AlertDelegate: AnyObject {
+    func presentAlert(with model: AlertModel)
+}

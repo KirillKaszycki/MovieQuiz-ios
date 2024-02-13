@@ -8,6 +8,8 @@
 import Foundation
 import UIKit
 
+
+// Структура для алертов
 struct AlertModel {
     let title: String
     let message: String

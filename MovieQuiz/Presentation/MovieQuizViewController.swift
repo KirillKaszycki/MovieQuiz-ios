@@ -1,7 +1,7 @@
 import UIKit
 
 
-final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
+final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, AlertDelegate {
     
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var counterLabel: UILabel!
@@ -39,6 +39,12 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         DispatchQueue.main.async {
             [weak self] in self?.show(quiz: viewModel)
         }
+    }
+    
+    
+    // MARK: - AlertDelegate
+    func presentAlert(with model: AlertModel) {
+        alertPresenter.presentAlert(with: model)
     }
     
     // MARK: - Private functions
@@ -130,7 +136,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             self.questionFactory.requestNextQuestion()
         }
         
-        alertPresenter.presentAlert(with: alertModel)
+        presentAlert(with: alertModel)
     }
     
     // Метод сброса рамки при смене вопроса
