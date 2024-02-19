@@ -84,7 +84,7 @@ final class StatisticServiceImplementation: StatisticService {
             let encoded = try encoder.encode(gameRecord)
             userDefaults.set(encoded, forKey: Keys.bestGame.rawValue)
         } catch {
-            print("Ошибка в сохранении: \(error)")
+            print("Невозможно сохранить результат: \(error)")
 
         }
     }
