@@ -16,6 +16,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     private var currentQuestion: QuizQuestion?
     
     private var alertPresenter: AlertPresenter!
+    private var statisticService: StatisticService?
+    
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -25,6 +27,11 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         questionFactory.requestNextQuestion()
         
         alertPresenter = AlertPresenter(viewController: self)
+        
+        statisticService = StatisticServiceImplementation()
+        
+        // let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        // print(documentsURL)
     }
     
     
@@ -48,23 +55,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     }
     
     // MARK: - Private functions
-    
-    // Метод конвертации
-    private func convert(model: QuizQuestion) -> QuizStepViewModel {
-        let questionStep = QuizStepViewModel (
-            image: UIImage(named: model.image) ?? UIImage(),
-            question: model.text,
-            questionNumber: "\(currentQuestionIndex + 1)/\(questionsAmount)")
-        return questionStep
-    }
-    
-    // Метод показа картинки и вопроса
-    private func show(quiz step: QuizStepViewModel) {
-        imageView.image = step.image
-        textLabel.text = step.question
-        counterLabel.text = step.questionNumber
-    }
-    
     // Метод логики кнопки "Да"
     @IBAction private func yesButtonClicked(_ sender: Any) {
         guard let currentQuestion = currentQuestion else {
@@ -85,6 +75,22 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
     }
     
+    // Метод конвертации
+    private func convert(model: QuizQuestion) -> QuizStepViewModel {
+        let questionStep = QuizStepViewModel (
+            image: UIImage(named: model.image) ?? UIImage(),
+            question: model.text,
+            questionNumber: "\(currentQuestionIndex + 1)/\(questionsAmount)")
+        return questionStep
+    }
+    
+    // Метод показа картинки и вопроса
+    private func show(quiz step: QuizStepViewModel) {
+        imageView.image = step.image
+        textLabel.text = step.question
+        counterLabel.text = step.questionNumber
+    }
+    
     // Метод отображения рамки
     private func showAnswerResult (isCorrect: Bool) {
         if isCorrect {
@@ -103,24 +109,42 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     // Метод логики смены вопросов
     private func showNextQuestionOrResults() {
         if currentQuestionIndex == questionsAmount - 1 {
-            let text = correctAnswers == questionsAmount ?
-                        "Поздравляем, вы ответили на 10 из 10!" :
-                        "Вы ответили на \(correctAnswers) из 10, попробуйте ещё раз!"
-            let viewModel = QuizResultsViewModel(
-                title: "Этот раунд окончен!",
-                text: text,
-                buttonText: "Сыграть ещё раз")
+            statisticService?.store(correct: correctAnswers, total: questionsAmount)
+            guard let statisticService = statisticService else {
+                // Handle missing statistic service
+                return
+            }
+            let totalGames = statisticService.gamesCount
+            let record = statisticService.bestGame
+            let accuracy = statisticService.totalAccuracy
             
-            show(quiz: viewModel)
+            let message = """
+            Ваш результат: \(correctAnswers)/\(questionsAmount)
+            Количество сыгранных квизов: \(totalGames)
+            Рекорд: \(record.correct)/\(record.total) (\(record.date.dateTimeString))
+            Средняя точность: \(String(format: "%.2f", accuracy))%
+            """
             
-            resetImageBorder()
+            let alertModel = AlertModel(title: "Игра закончена!", message: message, buttonText: "Сыграть еще раз") { [weak self] in
+                self?.restartQuiz()
+            }
+            
+            alertPresenter?.presentAlert(with: alertModel)
         } else {
             currentQuestionIndex += 1
             resetImageBorder()
-            
-            questionFactory.requestNextQuestion()
+            self.questionFactory.requestNextQuestion()
         }
     }
+    
+    // Метод для перезапуска игры
+    private func restartQuiz() {
+        currentQuestionIndex = 0
+        correctAnswers = 0
+        questionFactory.requestNextQuestion()
+        resetImageBorder()
+    }
+
     
     // Мметод отображения результатов
     private func show(quiz result: QuizResultsViewModel) {
