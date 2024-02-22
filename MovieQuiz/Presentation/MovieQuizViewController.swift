@@ -30,8 +30,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         
         statisticService = StatisticServiceImplementation()
         
-        // let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        // print(documentsURL)
     }
     
     
