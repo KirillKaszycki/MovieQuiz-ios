@@ -24,13 +24,12 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     override func viewDidLoad() {
         super.viewDidLoad()
        
-        questionFactory?.delegate = self
-        questionFactory?.requestNextQuestion()
-        
-        alertPresenter = AlertPresenter(viewController: self)
-        
+        imageView.layer.cornerRadius = 20
+        questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
         statisticService = StatisticServiceImplementation()
+
         showLoadingIndicator()
+        questionFactory?.loadData()
     }
     
     

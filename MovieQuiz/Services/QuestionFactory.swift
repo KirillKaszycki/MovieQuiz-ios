@@ -9,6 +9,7 @@ import Foundation
 
 
 class QuestionFactory: QuestionFactoryProtocol {
+    
 
     
     private let moviesLoader: MoviesLoading
