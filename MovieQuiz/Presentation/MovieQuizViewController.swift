@@ -30,6 +30,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         alertPresenter = AlertPresenter(viewController: self)
         
         statisticService = StatisticServiceImplementation()
+        showLoadingIndicator()
     }
     
     
