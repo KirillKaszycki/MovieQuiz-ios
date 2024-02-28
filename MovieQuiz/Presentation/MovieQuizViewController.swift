@@ -3,16 +3,17 @@ import UIKit
 
 final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, AlertDelegate {
     
+    
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var counterLabel: UILabel!
     @IBOutlet private weak var textLabel: UILabel!
-    
+    @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
     
     private var currentQuestionIndex: Int = 0
     private var correctAnswers: Int = 0
     
     private let questionsAmount: Int = 10
-    private var questionFactory = QuestionFactory()
+    private var questionFactory: QuestionFactory?
     private var currentQuestion: QuizQuestion?
     
     private var alertPresenter: AlertPresenter!
@@ -23,15 +24,15 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     override func viewDidLoad() {
         super.viewDidLoad()
        
-        questionFactory.delegate = self
-        questionFactory.requestNextQuestion()
+        imageView.layer.cornerRadius = 20
+        questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
+        statisticService = StatisticServiceImplementation()
+
+        showLoadingIndicator()
+        questionFactory?.loadData()
         
         alertPresenter = AlertPresenter(viewController: self)
-        
         statisticService = StatisticServiceImplementation()
-        
-        // let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        // print(documentsURL)
     }
     
     
@@ -48,6 +49,14 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         }
     }
     
+    func didFailToLoadData(with error: Error) {
+        showNetworkError(message: error.localizedDescription)
+    }
+    
+    func didLoadDataFromServer() {
+        activityIndicator.isHidden = true // скрываем индикатор загрузки
+        questionFactory?.requestNextQuestion()
+    }
     
     // MARK: - AlertDelegate
     func presentAlert(with model: AlertModel) {
@@ -75,13 +84,13 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
     }
     
+    
     // Метод конвертации
     private func convert(model: QuizQuestion) -> QuizStepViewModel {
-        let questionStep = QuizStepViewModel (
-            image: UIImage(named: model.image) ?? UIImage(),
+        return QuizStepViewModel(
+            image: UIImage(data: model.image) ?? UIImage(),
             question: model.text,
             questionNumber: "\(currentQuestionIndex + 1)/\(questionsAmount)")
-        return questionStep
     }
     
     // Метод показа картинки и вопроса
@@ -133,7 +142,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         } else {
             currentQuestionIndex += 1
             resetImageBorder()
-            self.questionFactory.requestNextQuestion()
+            self.questionFactory?.requestNextQuestion()
         }
     }
     
@@ -141,7 +150,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     private func restartQuiz() {
         currentQuestionIndex = 0
         correctAnswers = 0
-        questionFactory.requestNextQuestion()
+        questionFactory?.requestNextQuestion()
         resetImageBorder()
     }
 
@@ -157,7 +166,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
             guard let self = self else { return }
             self.currentQuestionIndex = 0
             self.correctAnswers = 0
-            self.questionFactory.requestNextQuestion()
+            self.questionFactory?.requestNextQuestion()
         }
         
         presentAlert(with: alertModel)
@@ -168,7 +177,37 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         imageView.layer.borderWidth = 0
         imageView.layer.borderColor = nil
     }
+    
+    // Метод отображения индикатора загрузки
+    private func showLoadingIndicator() {
+        activityIndicator.isHidden = false
+        activityIndicator.startAnimating()
+    }
+    
+    // Метод скрытия индикатора загрузки
+    private func hideLoadingIndicator(){
+        activityIndicator.isHidden = true
+    }
+    
+    // Метод алерта ошибки закгрузки сети
+    private func showNetworkError(message: String) {
+        hideLoadingIndicator()
+        
+        let model = AlertModel(title: "Ошибка",
+                               message: message,
+                               buttonText: "Попробовать еще раз") { [weak self] in
+            guard let self = self else { return }
+            
+            self.currentQuestionIndex = 0
+            self.correctAnswers = 0
+            
+            self.questionFactory?.requestNextQuestion()
+        }
+        
+        alertPresenter.presentAlert(with: model)
+    }
 }
+
 
 /*
  Mock-данные
