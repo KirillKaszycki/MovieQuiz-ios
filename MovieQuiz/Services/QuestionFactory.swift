@@ -54,7 +54,7 @@ final class QuestionFactory: QuestionFactoryProtocol {
             let rating = Float(movie.rating) ?? 0
             let randomRating = Float.random(in: 5...10).rounded()
             
-            // Логика смены вариации вопросов
+            // Логика смены вариации вопросов: Больше/меньше
             let more: String = "больше"
             let less: String = "меньше"
             let comparison = [more, less].randomElement()
