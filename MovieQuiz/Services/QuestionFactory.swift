@@ -8,7 +8,7 @@
 import Foundation
 
 
-class QuestionFactory: QuestionFactoryProtocol {
+final class QuestionFactory: QuestionFactoryProtocol {
     
 
     
@@ -52,11 +52,29 @@ class QuestionFactory: QuestionFactoryProtocol {
             }
             
             let rating = Float(movie.rating) ?? 0
-            
             let randomRating = Float.random(in: 5...10).rounded()
             
-            let text = "Рейтинг этого фильма больше чем \(randomRating)?"
-            let correctAnswer = rating > randomRating
+            // Логика смены вариации вопросов
+            let more: String = "больше"
+            let less: String = "меньше"
+            let comparison = [more, less].randomElement()
+            
+            let text: String
+            let correctAnswer: Bool
+
+            if let comparisonType = comparison {
+                if comparisonType == more {
+                    text = "Рейтинг этого фильма \(comparisonType) чем \(randomRating)?"
+                    correctAnswer = rating > randomRating
+                } else {
+                    text = "Рейтинг этого фильма \(comparisonType) чем \(randomRating)?"
+                    correctAnswer = rating < randomRating
+                }
+            } else {
+                text = "Рейтинг этого фильма равен \(randomRating)?"
+                correctAnswer = rating == randomRating
+            }
+            //
             
             let question = QuizQuestion(image: imageData,
                                          text: text,

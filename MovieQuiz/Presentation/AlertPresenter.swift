@@ -10,7 +10,7 @@ import UIKit
 
 
 // Логика реализации алертов
-class AlertPresenter: AlertDelegate {
+final class AlertPresenter: AlertDelegate {
     private weak var viewController: UIViewController?
 
     init(viewController: UIViewController) {
