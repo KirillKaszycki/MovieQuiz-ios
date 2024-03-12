@@ -145,7 +145,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
             Средняя точность: \(String(format: "%.2f", accuracy))%
             """
             
-            let alertModel = AlertModel(title: "Игра закончена!", message: message, buttonText: "Сыграть еще раз") { [weak self] in
+            let alertModel = AlertModel(title: "Игра закончена!", message: message, buttonText: "Сыграть ещё раз") { [weak self] in
                 self?.restartQuiz()
             }
             
