@@ -34,7 +34,7 @@ class MoviesLoaderTests: XCTestCase {
     
     func testFailureLoading() throws {
         // Given
-        let stubNetworkClient = StubNetworkClient(emulateError: true) 
+        let stubNetworkClient = StubNetworkClient(emulateError: true)
         let loader = MoviesLoader(networkClient: stubNetworkClient)
         
         // When
@@ -71,7 +71,7 @@ struct StubNetworkClient: NetworkRouting {
             handler(.success(expectedResponse))
         }
     }
-   
+    
     private var expectedResponse: Data {
             """
             {
@@ -104,6 +104,6 @@ struct StubNetworkClient: NetworkRouting {
                 ]
               }
             """.data(using: .utf8) ?? Data()
-        }
+    }
     
 }

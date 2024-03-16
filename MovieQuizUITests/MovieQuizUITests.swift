@@ -10,7 +10,7 @@ import XCTest
 final class MovieQuizUITests: XCTestCase {
     
     var app: XCUIApplication!
-
+    
     override func setUpWithError() throws {
         try super.setUpWithError()
         
@@ -19,7 +19,7 @@ final class MovieQuizUITests: XCTestCase {
         
         continueAfterFailure = false
     }
-
+    
     override func tearDownWithError() throws {
         try super.tearDownWithError()
         
@@ -31,7 +31,7 @@ final class MovieQuizUITests: XCTestCase {
     func testScreenCast() throws {
         XCUIApplication().buttons["Нет"].tap()
     }
-
+    
     // MARK: - Buttons tests
     func testYesButton() {
         sleep(3)
@@ -47,7 +47,7 @@ final class MovieQuizUITests: XCTestCase {
         
         XCTAssertNotEqual(firstPosterData, secondPosterData)
     }
-        
+    
     func testNoButton() {
         sleep(3)
         
@@ -59,9 +59,9 @@ final class MovieQuizUITests: XCTestCase {
         
         let secondPoster = app.images["Poster"]
         let secondPosterData = secondPoster.screenshot().pngRepresentation
-
+        
         let indexLabel = app.staticTexts["Index"]
-       
+        
         XCTAssertNotEqual(firstPosterData, secondPosterData)
         XCTAssertEqual(indexLabel.label, "2/10")
     }
@@ -91,7 +91,7 @@ final class MovieQuizUITests: XCTestCase {
             app.buttons["No"].tap()
             sleep(2)
         }
-
+        
         let alert = app.alerts["Этот раунд окончен!"]
         
         XCTAssertTrue(alert.exists)

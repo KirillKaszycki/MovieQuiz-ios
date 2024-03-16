@@ -10,7 +10,7 @@ import Foundation
 
 final class QuestionFactory: QuestionFactoryProtocol {
     
-
+    
     
     private let moviesLoader: MoviesLoading
     var delegate: QuestionFactoryDelegate?
@@ -34,7 +34,7 @@ final class QuestionFactory: QuestionFactoryProtocol {
                 }
             }
         }
-    }  
+    }
     
     func requestNextQuestion() {
         DispatchQueue.global().async { [weak self] in
@@ -44,8 +44,8 @@ final class QuestionFactory: QuestionFactoryProtocol {
             guard let movie = self.movies[safe: index] else { return }
             
             var imageData = Data()
-           
-           do {
+            
+            do {
                 imageData = try Data(contentsOf: movie.imageURL)
             } catch {
                 print("Failed to load image")
@@ -61,7 +61,7 @@ final class QuestionFactory: QuestionFactoryProtocol {
             
             let text: String
             let correctAnswer: Bool
-
+            
             if let comparisonType = comparison {
                 if comparisonType == more {
                     text = "Рейтинг этого фильма \(comparisonType) чем \(randomRating)?"
@@ -77,8 +77,8 @@ final class QuestionFactory: QuestionFactoryProtocol {
             //
             
             let question = QuizQuestion(image: imageData,
-                                         text: text,
-                                         correctAnswer: correctAnswer)
+                                        text: text,
+                                        correctAnswer: correctAnswer)
             
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }

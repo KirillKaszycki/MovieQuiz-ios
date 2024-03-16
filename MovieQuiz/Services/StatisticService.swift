@@ -27,7 +27,7 @@ final class StatisticServiceImplementation: StatisticService {
             userDefaults.setValue(newValue, forKey: Keys.totalAccuracy.rawValue)
         }
     }
-        
+    
     var gamesCount: Int {
         get {
             return userDefaults.integer(forKey: Keys.gamesCount.rawValue)
@@ -62,7 +62,7 @@ final class StatisticServiceImplementation: StatisticService {
     private enum Keys: String {
         case totalAccuracy, gamesCount, bestGame, correct, total
     }
-
+    
     // MARK: - Методы класса
     // Обновить рекорд
     private func updateBestGame(correctCount: Int, totalCount: Int) {
@@ -85,7 +85,7 @@ final class StatisticServiceImplementation: StatisticService {
             userDefaults.set(encoded, forKey: Keys.bestGame.rawValue)
         } catch {
             print("Невозможно сохранить результат: \(error)")
-
+            
         }
     }
     
