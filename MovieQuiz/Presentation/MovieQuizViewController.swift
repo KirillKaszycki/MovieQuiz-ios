@@ -12,7 +12,7 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
     
     private var presenter: MovieQuizPresenter!
     
-    // MARK: - Lifecycle
+    // MARK: Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,7 +22,7 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
         imageView.layer.cornerRadius = 20
     }
     
-    // MARK: - Buttons
+    // MARK: Buttons
     
     @IBAction private func yesButtonClicked(_ sender: UIButton) {
         yesButton.isEnabled = false
@@ -49,8 +49,13 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
             self?.noButton.isEnabled = true
         }
     }
+}
+
+// MARK: - Extention for MovieQuizVuewControllerProtocol's methods
+
+extension MovieQuizViewController {
     
-    // MARK: - Private show functions
+    // MARK: Private show functions
     
     func show(quiz step: QuizStepViewModel) {
         imageView.layer.borderColor = UIColor.clear.cgColor
@@ -84,7 +89,7 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
         imageView.layer.borderColor = isCorrectAnswer ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
     }
     
-    // MARK: - Private HTTP functions
+    // MARK: Private HTTP functions
     
     func showLoadingIndicator() {
         activityIndicator.isHidden = false
@@ -109,7 +114,7 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
             
             self.presenter.restartGame()
         }
-        
         alert.addAction(action)
     }
 }
+

@@ -10,12 +10,16 @@ import UIKit
 
 final class MovieQuizPresenter: QuestionFactoryDelegate {
     
+    private enum constants {
+        static let totalQuestions: Int = 10
+    }
+    
     private let statisticService: StatisticService!
     private var questionFactory: QuestionFactoryProtocol?
     private weak var viewController: MovieQuizViewControllerProtocol?
     
     private var currentQuestion: QuizQuestion?
-    private let questionsAmount: Int = 10
+    private let questionsAmount: Int = constants.totalQuestions
     private var currentQuestionIndex: Int = 0
     private var correctAnswers: Int = 0
     
