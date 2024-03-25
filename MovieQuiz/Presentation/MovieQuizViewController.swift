@@ -51,7 +51,7 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
     }
 }
 
-// MARK: - Extention for MovieQuizVuewControllerProtocol's methods
+// MARK: - Extension for MovieQuizVuewControllerProtocol's methods
 
 extension MovieQuizViewController {
     
